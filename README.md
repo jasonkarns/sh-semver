@@ -1,9 +1,9 @@
 # sh-semver
 
-[![NPM Version][npm-image]][npm-url]
-[![Build][travis-image]][travis-url]
-
 The semantic versioner for Bourne Shell.
+
+[![NPM Version][npm-image]][npm-url]
+[![Test status][gha-image]][gha-url]
 
 ## CLI
 
@@ -69,5 +69,5 @@ Prerelease versions can satisfy comparators set only when have the same minor ma
 
 [npm-image]: https://img.shields.io/npm/v/sh-semver.svg
 [npm-url]: https://npmjs.org/package/sh-semver.sh
-[travis-image]: https://travis-ci.org/qzb/sh-semver.svg?branch=master
-[travis-url]: https://travis-ci.org/qzb/sh-semver
+[gha-image]: https://github.com/qzb/sh-semver/actions/workflows/test.yml/badge.svg
+[gha-url]: https://github.com/qzb/sh-semver/actions/workflows/test.yml
