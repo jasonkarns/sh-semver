@@ -7,7 +7,7 @@ The semantic versioner for Bourne Shell.
 
 ## CLI
 
-```
+```console
 semver.sh [-r <rule>] [<version>... ]
 ```
 
@@ -33,13 +33,13 @@ There are five basic comparators:
 
 ### Advanced comparators
 
-##### Wildcards `*` `*.*` `*.*.*`
+#### Wildcards `*` `*.*` `*.*.*`
 
 Wildcard comparators can be satisfied by any version, even prerelease one.
 
 Instead of `*` character can be used `x` or `X`.
 
-##### Wildcard ranges `A.*.*` `A.B.*`
+#### Wildcard ranges `A.*.*` `A.B.*`
 
 Wildcard ranges can be satisfied when only part of version is matching. In contrast to wildcards, wildcard ranges cannot be satisfied by prerelease versions.
 
@@ -48,26 +48,26 @@ Wildcard ranges can be satisfied when only part of version is matching. In contr
 
 The special character (`*`, `x` or `X`) is optional.
 
-###### Examples
+**Examples**
 
 - `1.2` := `>=1.2.0 <1.3.0`
 - `5.*.*` := `>=5.0.0 <6.0.0`
 
-##### Caret ranges `^A.B.C`
+#### Caret ranges `^A.B.C`
 
 Matches to compatible versions.
 
-###### Examples
+**Examples**
 
 - `^1.2.3` := `>=1.2.3 <2.0.0`
 - `^0.1.2` := `>=0.1.2 <0.2.0`
 - `^0.0.1` := `>=0.0.1 <0.0.2`
 
-##### Tilde ranges `~A.B.C` `~A.B` `~A`
+#### Tilde ranges `~A.B.C` `~A.B` `~A`
 
 If patch version is specified tilde ranges matches to all greater or equal versions with the same minor version. Otherwise is equivalent of `A.B.*` when minor version is specified or `A.*.*` when not.
 
-##### Hyphen ranges `A.B.C - X.Y.Z`
+#### Hyphen ranges `A.B.C - X.Y.Z`
 
 Hyphen range `A.B.C - X.Y.Z` equivalent of `>=A.B.C <=X.Y.Z`.
 
