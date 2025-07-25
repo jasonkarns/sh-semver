@@ -103,8 +103,6 @@ done <<EOF
 ['^1.2.3', '1.2.3-pre']
 EOF
 
-
-
 describe "Negative range tests"
 
 while read -r line; do

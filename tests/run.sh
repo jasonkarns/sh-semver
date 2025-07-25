@@ -30,20 +30,20 @@ assert()
     #   [ "$a" = "$b" ]
     if [ "$(printf "$1")" = "$(printf "$2")" ]; then
         printf "    \033[32m$LABEL\033[0m\n"
-        OK_COUNT=$(( OK_COUNT + 1 ))
+        OK_COUNT=$((OK_COUNT + 1))
     else
         printf "    \033[31m$LABEL\n"
         printf "      \"$1\" != \"$2\"\033[0m\n"
-        FAIL_COUNT=$(( FAIL_COUNT + 1 ))
+        FAIL_COUNT=$((FAIL_COUNT + 1))
     fi
 
-    CURRENT_COUNTER=$(( CURRENT_COUNTER + 1 ))
+    CURRENT_COUNTER=$((CURRENT_COUNTER + 1))
 }
 
 summary()
 {
     printf "\n"
-    printf "Total:   $(( OK_COUNT + FAIL_COUNT))\n"
+    printf "Total:   $((OK_COUNT + FAIL_COUNT))\n"
     printf "Succeed: $OK_COUNT\n"
     printf "Failed:  $FAIL_COUNT\n"
 
@@ -52,10 +52,8 @@ summary()
     fi
 }
 
-
 # Import semver
 . ./semver.sh < <(echo) # need to provide some stdin since no args are provided
-
 
 # Import specs
 . ./tests/input.sh
@@ -63,7 +61,6 @@ summary()
 . ./tests/strict_rules_tests.sh
 . ./tests/output.sh
 #. ./tests/node_semver_tests.sh
-
 
 # Summarize
 summary

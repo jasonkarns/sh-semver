@@ -56,7 +56,7 @@ describe 'semver_lt'
         local msg="$1 < $2 => $3"
         semver_lt $1 $2
         assert $? $3 "$msg"
-    }
+}
 
     assert_lt 1.2.2 1.2.3 0
     assert_lt 1.2.3 1.2.3 1

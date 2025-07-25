@@ -1,4 +1,3 @@
-
 describe 'Strict ranges'
 
 while read -r line; do

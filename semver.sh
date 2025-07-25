@@ -102,7 +102,7 @@ semver_eq()
             return 1
         fi
 
-        local count=$(( count + 1 ))
+        local count=$((count + 1))
     done
 
     if [ "$(get_prerelease "$1")" = "$(get_prerelease "$2")" ]; then
@@ -119,7 +119,6 @@ semver_lt()
     number_b=$(get_number "$2")
     prerelease_a=$(get_prerelease "$1")
     prerelease_b=$(get_prerelease "$2")
-
 
     local head_a=''
     local head_b=''
@@ -224,14 +223,14 @@ semver_sort()
 
     for ver in "$@"; do
         if semver_le "$ver" "$pivot"; then
-            args_a=( "${args_a[@]}" "$ver" )
+            args_a=("${args_a[@]}" "$ver")
         else
-            args_b=( "$ver" "${args_b[@]}" )
+            args_b=("$ver" "${args_b[@]}")
         fi
     done
 
-    args_a=( $(semver_sort "${args_a[@]}") )
-    args_b=( $(semver_sort "${args_b[@]}") )
+    args_a=($( semver_sort "${args_a[@]}"))
+    args_b=($( semver_sort "${args_b[@]}"))
     echo "${args_a[@]}" "$pivot" "${args_b[@]}"
 }
 
@@ -240,7 +239,7 @@ regex_match()
     local string="$1 "
     local regexp="$2"
     local match
-    match="$(eval "echo '$string' | grep -E -o '^[ \t]*($regexp)[ \t]+'")";
+    match="$(eval "echo '$string' | grep -E -o '^[ \t]*($regexp)[ \t]+'")"
 
     for i in $(seq 0 9); do
         unset "MATCHED_VER_$i"
@@ -259,13 +258,13 @@ regex_match()
     local i=1
     for part in $string; do
         local ver num
-        ver="$(eval "echo '$part' | grep -E -o '$RE_VER'   | head -n 1 | sed 's/ \t//g'")";
+        ver="$(eval "echo '$part' | grep -E -o '$RE_VER'   | head -n 1 | sed 's/ \t//g'")"
         num=$(get_number "$ver")
 
         if [ -n "$ver" ]; then
             eval "MATCHED_VER_$i='$ver'"
             eval "MATCHED_NUM_$i='$num'"
-            i=$(( i + 1 ))
+            i=$((i + 1))
         fi
     done
 
@@ -301,8 +300,8 @@ resolve_rule()
 {
     local rule operator operands
     rule="$1"
-    operator="$( echo "$rule" | sed "s/$BRE_VERSION/#/g" )"
-    operands=( $( echo "$rule" | grep -o "$BRE_VERSION") )
+    operator="$( echo "$rule" | sed "s/$BRE_VERSION/#/g")"
+    operands=($(  echo "$rule" | grep -o "$BRE_VERSION"))
 
     case "$operator" in
         '*')     echo "all" ;;
@@ -312,11 +311,13 @@ resolve_rule()
         '>#')    echo "gt ${operands[0]}" ;;
         '<=#')   echo "le ${operands[0]}" ;;
         '>=#')   echo "ge ${operands[0]}" ;;
-        '#_-_#') echo "ge ${operands[0]}"
-                 echo "le ${operands[1]}" ;;
+        '#_-_#')
+                 echo "ge ${operands[0]}"
+                 echo "le ${operands[1]}"
+                                          ;;
         '~#')    echo "tilde ${operands[0]}" ;;
         '^#')    echo "caret ${operands[0]}" ;;
-        *)       return 1
+        *)       return 1 ;;
     esac
 }
 
@@ -324,7 +325,7 @@ resolve_rules()
 {
     local rules
     rules="$(normalize_rules "$1")"
-    IFS=' ' read -ra rules <<< "${rules:-all}"
+    IFS=' ' read -ra rules <<<"${rules:-all}"
 
     for rule in "${rules[@]}"; do
         resolve_rule "$rule"
@@ -336,7 +337,7 @@ rule_eq()
     local rule_ver="$1"
     local tested_ver="$2"
 
-    semver_eq "$tested_ver" "$rule_ver" && return 0 || return 1;
+    semver_eq "$tested_ver" "$rule_ver" && return 0 || return 1
 }
 
 rule_le()
@@ -344,7 +345,7 @@ rule_le()
     local rule_ver="$1"
     local tested_ver="$2"
 
-    semver_le "$tested_ver" "$rule_ver" && return 0 || return 1;
+    semver_le "$tested_ver" "$rule_ver" && return 0 || return 1
 }
 
 rule_lt()
@@ -352,7 +353,7 @@ rule_lt()
     local rule_ver="$1"
     local tested_ver="$2"
 
-    semver_lt "$tested_ver" "$rule_ver" && return 0 || return 1;
+    semver_lt "$tested_ver" "$rule_ver" && return 0 || return 1
 }
 
 rule_ge()
@@ -360,7 +361,7 @@ rule_ge()
     local rule_ver="$1"
     local tested_ver="$2"
 
-    semver_ge "$tested_ver" "$rule_ver" && return 0 || return 1;
+    semver_ge "$tested_ver" "$rule_ver" && return 0 || return 1
 }
 
 rule_gt()
@@ -368,7 +369,7 @@ rule_gt()
     local rule_ver="$1"
     local tested_ver="$2"
 
-    semver_gt "$tested_ver" "$rule_ver" && return 0 || return 1;
+    semver_gt "$tested_ver" "$rule_ver" && return 0 || return 1
 }
 
 rule_tilde()
@@ -421,11 +422,11 @@ apply_rules()
 {
     local rules_string="$1"
     shift
-    local versions=( "$@" )
+    local versions=("$@")
 
     # Loop over sets of rules (sets of rules are separated with ||)
     for ver in "${versions[@]}"; do
-        rules_tail="$rules_string";
+        rules_tail="$rules_string"
 
         while [ -n "$rules_tail" ]; do
             head="${rules_tail%%||*}"
@@ -457,7 +458,7 @@ apply_rules()
             success=true
             allow_prerel=false
             if $FORCE_ALLOW_PREREL; then
-              allow_prerel=true
+                allow_prerel=true
             fi
 
             while read -r rule; do
@@ -473,21 +474,19 @@ apply_rules()
                     success=false
                     break
                 fi
-            done <<< "$rules"
+            done <<<"$rules"
 
             if $success; then
                 if [ -z "$(get_prerelease "$ver")" ] || $allow_prerel; then
                     echo "$ver"
-                    break;
+                    break
                 fi
             fi
         done
 
-        group=$(( group + 1 ))
+        group=$((group + 1))
     done
 }
-
-
 
 FORCE_ALLOW_PREREL=false
 USAGE="Usage:    $0 [-r <rule>] [<version>... ]
@@ -498,21 +497,21 @@ Omitting -r <rule> simply sorts the versions according to semver ordering."
 while getopts ar:h o; do
     case "$o" in
         a) FORCE_ALLOW_PREREL=true ;;
-        r) RULES_STRING="$OPTARG||";;
+        r) RULES_STRING="$OPTARG||" ;;
         h) echo "$USAGE" && exit ;;
-        ?) echo "$USAGE" && exit 1;;
+        ?) echo "$USAGE" && exit 1 ;;
     esac
 done
 
-shift $(( OPTIND-1 ))
+shift $((OPTIND - 1))
 
-VERSIONS=( ${@:-$(cat -)} )
+VERSIONS=(${@:-$( cat -)})
 
 # Sort versions
-VERSIONS=( $(semver_sort "${VERSIONS[@]}") )
+VERSIONS=($( semver_sort "${VERSIONS[@]}"))
 
 if [ -z "$RULES_STRING" ]; then
-  printf '%s\n' "${VERSIONS[@]}"
+    printf '%s\n' "${VERSIONS[@]}"
 else
-  apply_rules "$RULES_STRING" "${VERSIONS[@]}"
+    apply_rules "$RULES_STRING" "${VERSIONS[@]}"
 fi
