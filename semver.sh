@@ -304,20 +304,20 @@ resolve_rule()
     operands=($(  echo "$rule" | grep -o "$BRE_VERSION"))
 
     case "$operator" in
-        '*')     echo "all" ;;
-        '#')     echo "eq ${operands[0]}" ;;
-        '=#')    echo "eq ${operands[0]}" ;;
-        '<#')    echo "lt ${operands[0]}" ;;
-        '>#')    echo "gt ${operands[0]}" ;;
-        '<=#')   echo "le ${operands[0]}" ;;
-        '>=#')   echo "ge ${operands[0]}" ;;
+        '*')    echo "all" ;;
+        '#')    echo "eq ${operands[0]}" ;;
+        '=#')   echo "eq ${operands[0]}" ;;
+        '<#')   echo "lt ${operands[0]}" ;;
+        '>#')   echo "gt ${operands[0]}" ;;
+        '<=#')  echo "le ${operands[0]}" ;;
+        '>=#')  echo "ge ${operands[0]}" ;;
         '#_-_#')
-                 echo "ge ${operands[0]}"
-                 echo "le ${operands[1]}"
-                                          ;;
-        '~#')    echo "tilde ${operands[0]}" ;;
-        '^#')    echo "caret ${operands[0]}" ;;
-        *)       return 1 ;;
+                echo "ge ${operands[0]}"
+                echo "le ${operands[1]}"
+                                            ;;
+        '~#')   echo "tilde ${operands[0]}" ;;
+        '^#')   echo "caret ${operands[0]}" ;;
+        *)      return 1 ;;
     esac
 }
 
