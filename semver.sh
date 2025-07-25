@@ -229,8 +229,8 @@ semver_sort()
         fi
     done
 
-    args_a=($( semver_sort "${args_a[@]}"))
-    args_b=($( semver_sort "${args_b[@]}"))
+    IFS=" " read -ra args_a <<<"$(semver_sort "${args_a[@]}")"
+    IFS=" " read -ra args_b <<<"$(semver_sort "${args_b[@]}")"
     echo "${args_a[@]}" "$pivot" "${args_b[@]}"
 }
 
@@ -298,10 +298,12 @@ normalize_rules()
 # Reads rule from provided string
 resolve_rule()
 {
-    local rule operator operands
-    rule="$1"
-    operator="$( echo "$rule" | sed "s/$BRE_VERSION/#/g")"
-    operands=($(  echo "$rule" | grep -o "$BRE_VERSION"))
+    local rule="$1" operator operands=()
+    # shellcheck disable=2001
+    operator="$(echo "$rule" | sed "s/$BRE_VERSION/#/g")"
+    while IFS='' read -r operand; do
+        operands+=("$operand")
+    done < <(echo "$rule" | grep -o "$BRE_VERSION")
 
     case "$operator" in
         '*')    echo "all" ;;
@@ -420,6 +422,7 @@ rule_all()
 
 apply_rules()
 {
+    local rules
     local rules_string="$1"
     shift
     local versions=("$@")
@@ -505,10 +508,10 @@ done
 
 shift $((OPTIND - 1))
 
-VERSIONS=(${@:-$( cat -)})
+read -ra VERSIONS <<<"${@:-$(cat -)}"
 
 # Sort versions
-VERSIONS=($( semver_sort "${VERSIONS[@]}"))
+IFS=" " read -ra VERSIONS <<<"$(semver_sort "${VERSIONS[@]}")"
 
 if [ -z "$RULES_STRING" ]; then
     printf '%s\n' "${VERSIONS[@]}"
